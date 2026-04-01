@@ -3,266 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>مساعد الصيدلي الذكي - DrugEye</title>
+    <title>DrugEye - نظام التجميد الذكي</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; }
+        body { font-family: sans-serif; margin: 0; padding: 0; background-color: #f4f7f6; overflow-x: hidden; }
+        .main-header { display: flex; align-items: center; padding: 10px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); sticky; top:0; z-index:10; }
+        .search-container { flex-grow: 1; margin: 0 10px; }
+        .search-input { width: 100%; padding: 12px; border: 2px solid #3498db; border-radius: 25px; font-size: 16px; outline: none; box-sizing: border-box; }
+        .icon-btn { border: none; background: none; font-size: 28px; cursor: pointer; color: #3498db; }
         
-        /* الشاشة الرئيسية */
-        .main-header { display: flex; align-items: center; justify-content: space-between; padding: 10px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 100; }
-        .search-container { flex-grow: 1; margin: 0 10px; position: relative; }
-        .search-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 20px; font-size: 16px; box-sizing: border-box; }
-        .icon-btn { border: none; background: none; font-size: 24px; cursor: pointer; color: #3498db; padding: 5px 10px; }
-        .icon-btn.sync { color: #2ecc71; }
-
-        /* زراير الفلاتر */
-        .filter-buttons { display: flex; justify-content: center; padding: 10px; background-color: #fff; border-bottom: 1px solid #eee; }
-        .filter-btn { border: 1px solid #3498db; background: none; color: #3498db; padding: 8px 15px; margin: 0 5px; border-radius: 15px; font-size: 14px; cursor: pointer; }
-        .filter-btn.active { background-color: #3498db; color: #fff; }
-
-        /* جدول النتائج */
         .results-container { padding: 10px; }
-        table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 5px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { text-align: right; padding: 12px; border-bottom: 1px solid #eee; }
-        th { background-color: #f8f9fa; color: #555; font-size: 14px; }
-        td { font-size: 14px; }
-        .trend-icon { font-size: 12px; margin-right: 3px; }
-        .up { color: #e74c3c; } /* تركيز أعلى */
-        .down { color: #2ecc71; } /* تركيز أقل */
+        table { width: 100%; background: #fff; border-radius: 10px; overflow: hidden; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-size: 13px; }
 
-        /* شاشة الكاميرا */
-        #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 200; flex-direction: column; align-items: center; justify-content: flex-end; }
+        /* شاشة الكاميرا المتطورة */
+        #camera-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 100; flex-direction: column; }
+        #video-container { position: relative; width: 100%; height: 80%; background: #000; overflow: hidden; }
         #camera-feed { width: 100%; height: 100%; object-fit: cover; }
+        #snapshot-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; display: none; }
+        #ocr-overlay-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 105; pointer-events: auto; }
         
-        .camera-controls-bottom { position: absolute; bottom: 20px; width: 90%; background: rgba(255,255,255,0.9); padding: 15px; border-radius: 15px; text-align: center; }
-        #detected-text-box { display: flex; align-items: center; justify-content: space-between; border: 1px solid #ccc; border-radius: 10px; padding: 8px; background: #fff; margin-bottom: 10px; }
-        #detected-text { flex-grow: 1; font-size: 16px; font-weight: bold; color: #333; text-align: center; }
+        .word-highlight {
+            position: absolute;
+            background: rgba(52, 152, 219, 0.3);
+            border: 2px solid #3498db;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 110;
+        }
+
+        .camera-controls { height: 20%; background: #222; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        #capture-btn { width: 70px; height: 70px; background: #fff; border: 5px solid #3498db; border-radius: 50%; cursor: pointer; }
+        #capture-btn:active { background: #3498db; }
         
-        .cam-action-btn { border: none; padding: 10px 20px; border-radius: 20px; font-size: 14px; cursor: pointer; margin: 0 5px; }
-        .reset-btn { background-color: #e74c3c; color: #fff; }
-        .confirm-btn { background-color: #2ecc71; color: #fff; }
-        .close-cam { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 24px; border: none; background: none; }
-
-        /* لودينج لقراءة النصوص */
-        #loading-ocr { display: none; position: absolute; color: #fff; font-size: 18px; bottom: 50%; }
-
+        .status-text { margin-top: 10px; font-size: 14px; color: #bbb; }
+        .close-cam { position: absolute; top: 20px; left: 20px; color: #fff; font-size: 40px; background: rgba(0,0,0,0.5); border: none; z-index: 120; border-radius: 50%; width: 50px; height: 50px; }
+        #loading-msg { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; background: rgba(0,0,0,0.7); padding: 15px; border-radius: 10px; display: none; z-index: 115; }
     </style>
 </head>
 <body>
 
     <div class="main-header">
-        <button class="icon-btn sync" title="تحديث الأسعار">&#10227;</button>
+        <button class="icon-btn" onclick="location.reload()">&#10227;</button>
         <div class="search-container">
-            <input type="search" class="search-input" id="main-search" placeholder="ابحث باسم الصنف، المادة الفعالة...">
+            <input type="text" id="main-search" class="search-input" placeholder="ابحث هنا...">
         </div>
-        <button class="icon-btn camera-trigger" id="open-camera" title="افتح الكاميرا">&#128247;</button>
-    </div>
-
-    <div class="filter-buttons">
-        <button class="filter-btn active" data-filter="all">الكل</button>
-        <button class="filter-btn" data-filter="badil">بديل (نفس المادة)</button>
-        <button class="filter-btn" data-filter="masil">مثيل (نفس المفعول)</button>
+        <button class="icon-btn" id="btn-open-cam">&#128247;</button>
     </div>
 
     <div class="results-container">
-        <table id="results-table">
-            <thead>
-                <tr>
-                    <th>الصنف</th>
-                    <th>التركيز</th>
-                    <th>السعر</th>
-                    <th>الشركة</th>
-                </tr>
-            </thead>
-            <tbody id="results-body">
-                <tr><td colspan="4" style="text-align:center;">ابدأ البحث بالكاميرا أو الكتابة</td></tr>
+        <table>
+            <thead><tr><th>الصنف</th><th>التركيز</th><th>السعر</th><th>الشركة</th></tr></thead>
+            <tbody id="table-body">
+                <tr><td colspan="4" style="text-align:center; padding: 30px;">اضغط على الكاميرا وصور علبة الدواء</td></tr>
             </tbody>
         </table>
     </div>
 
     <div id="camera-overlay">
-        <button class="close-cam" id="close-camera">&times;</button>
-        <video id="camera-feed" autoplay playsinline></video>
-        <canvas id="camera-canvas" style="display:none;"></canvas>
-        <div id="loading-ocr">جاري القراءة...</div>
+        <button class="close-cam" id="btn-close-overlay">&times;</button>
+        
+        <div id="video-container">
+            <video id="camera-feed" autoplay playsinline></video>
+            <canvas id="snapshot-canvas"></canvas>
+            <div id="ocr-overlay-layer"></div>
+            <div id="loading-msg">جاري تحليل الصورة...</div>
+        </div>
 
-        <div class="camera-controls-bottom">
-            <div id="detected-text-box">
-                <span id="detected-text">انتظر، جاري التعرف على النص</span>
-                <button class="icon-btn reset-btn" id="reset-ocr">&#10006;</button>
-            </div>
-            <button class="cam-action-btn confirm-btn" id="confirm-search">تأكيد وبحث</button>
+        <div class="camera-controls">
+            <div id="capture-btn"></div>
+            <p class="status-text" id="status-hint">وجه الكاميرا واضغط لتصوير الدواء</p>
+            <button id="btn-retake" style="display:none; background:#e74c3c; color:#fff; border:none; padding:10px 20px; border-radius:10px;">إعادة تصوير</button>
         </div>
     </div>
 
-    <script>
-        // --- البيانات التخيلية (للتجربة) ---
-        // في المستقبل، هنستبدل ده بالبيانات الحقيقية من الـ API بتاعك
-        const drugData = [
-            { id: 1, name: "Cataflam 50mg", material: "Diclofenac K", strength: 50, price: 50, company: "Novartis" },
-            { id: 2, name: "Cataflam 25mg", material: "Diclofenac K", strength: 25, price: 30, company: "Novartis" },
-            { id: 3, name: "Voltaren 50mg", material: "Diclofenac K", strength: 50, price: 55, company: "GSK" },
-            { id: 4, name: "Panadol 500mg", material: "Paracetamol", strength: 500, price: 20, company: "GSK" },
-            { id: 5, name: "Adol 500mg", material: "Paracetamol", strength: 500, price: 18, company: "Julphar" },
-            { id: 6, name: "Brufen 400mg", material: "Ibuprofen", strength: 400, price: 40, company: "Abbott" }
-        ];
+<script>
+    const drugs = [
+        { name: "Cataflam", material: "Diclofenac K", strength: "50mg", price: 50, company: "Novartis" },
+        { name: "Panadol", material: "Paracetamol", strength: "500mg", price: 20, company: "GSK" },
+        { name: "Brufen", material: "Ibuprofen", strength: "400mg", price: 40, company: "Abbott" }
+    ];
 
-        // --- عناصر الواجهة ---
-        const mainSearch = document.getElementById('main-search');
-        const openCamBtn = document.getElementById('open-camera');
-        const cameraOverlay = document.getElementById('camera-overlay');
-        const closeCamBtn = document.getElementById('close-camera');
-        const cameraFeed = document.getElementById('camera-feed');
-        const cameraCanvas = document.getElementById('camera-canvas');
-        const detectedTextBox = document.getElementById('detected-text');
-        const resetOcrBtn = document.getElementById('reset-ocr');
-        const confirmSearchBtn = document.getElementById('confirm-search');
-        const loadingOcr = document.getElementById('loading-ocr');
-        const resultsBody = document.getElementById('results-body');
-        const filterBtns = document.querySelectorAll('.filter-btn');
+    const btnOpenCam = document.getElementById('btn-open-cam');
+    const btnCloseOverlay = document.getElementById('btn-close-overlay');
+    const cameraOverlay = document.getElementById('camera-overlay');
+    const video = document.getElementById('camera-feed');
+    const canvas = document.getElementById('snapshot-canvas');
+    const overlayLayer = document.getElementById('ocr-overlay-layer');
+    const captureBtn = document.getElementById('capture-btn');
+    const btnRetake = document.getElementById('btn-retake');
+    const loadingMsg = document.getElementById('loading-msg');
+    const statusHint = document.getElementById('status-hint');
+    const mainSearch = document.getElementById('main-search');
 
-        let stream = null;
-        let ocrInterval = null;
-        let selectedDrug = null; // الدواء اللي قريته الكاميرا
+    let stream = null;
 
-        // --- وظائف الكاميرا و الـ OCR ---
-
-        openCamBtn.addEventListener('click', async () => {
-            try {
-                // فتح الكاميرا الخلفية بدقة عالية
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facignMode: "environment", width: { ideal: 1280 }, height: { ideal: 720 } } 
-                });
-                cameraFeed.srcObject = stream;
-                cameraOverlay.style.display = 'flex';
-                startOcrScanner(); // ابدأ قراءة النصوص
-            } catch (err) {
-                console.error("خطأ في فتح الكاميرا:", err);
-                alert("لم نتمكن من فتح الكاميرا. يرجى التأكد من الأذونات.");
-            }
-        });
-
-        const stopCamera = () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-            clearInterval(ocrInterval);
-            cameraOverlay.style.display = 'none';
-            detectedTextBox.innerText = "انتظر، جاري التعرف على النص";
-        };
-
-        closeCamBtn.addEventListener('click', stopCamera);
-
-        const startOcrScanner = () => {
-            // عمل "مسح" كل ثانيتين لقراءة النصوص من الكاميرا
-            ocrInterval = setInterval(async () => {
-                loadingOcr.style.display = 'block';
-                const ctx = cameraCanvas.getContext('2d');
-                cameraCanvas.width = cameraFeed.videoWidth;
-                cameraCanvas.height = cameraFeed.videoHeight;
-                ctx.drawImage(cameraFeed, 0, 0, cameraCanvas.width, cameraCanvas.height);
-
-                // استخدام Tesseract لقراءة النصوص العربي والإنجليزي من الصورة
-                const { data: { text } } = await Tesseract.recognize(cameraCanvas, 'eng+ara');
-                
-                loadingOcr.style.display = 'none';
-                
-                // تنظيف النص المقروء (حذف الفراغات الزائدة)
-                const cleanText = text.trim();
-                if (cleanText.length > 3) {
-                    detectedTextBox.innerText = cleanText;
-                }
-            }, 2500);
-        };
-
-        resetOcrBtn.addEventListener('click', () => {
-            detectedTextBox.innerText = "أعد محاولة القراءة...";
-        });
-
-        confirmSearchBtn.addEventListener('click', () => {
-            const textToSearch = detectedTextBox.innerText;
-            mainSearch.value = textToSearch;
-            stopCamera();
-            performSearch(textToSearch); // ابدأ البحث في الشاشة الرئيسية
-        });
-
-        // --- وظائف البحث والفلترة ---
-
-        mainSearch.addEventListener('input', (e) => {
-            performSearch(e.target.value);
-        });
-
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelector('.filter-btn.active').classList.remove('active');
-                btn.classList.add('active');
-                performSearch(mainSearch.value, btn.dataset.filter);
+    btnOpenCam.onclick = async () => {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } } 
             });
-        });
+            video.srcObject = stream;
+            cameraOverlay.style.display = 'flex';
+            resetUI();
+        } catch (e) { alert("تأكد من إذن الكاميرا!"); }
+    };
 
-        const performSearch = (query, filterType = 'all') => {
-            if (!query) {
-                resultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">ابدأ البحث بالكاميرا أو الكتابة</td></tr>';
-                return;
-            }
+    function resetUI() {
+        video.style.display = 'block';
+        canvas.style.display = 'none';
+        overlayLayer.innerHTML = '';
+        captureBtn.style.display = 'block';
+        btnRetake.style.display = 'none';
+        statusHint.innerText = "وجه الكاميرا واضغط لتصوير الدواء";
+        loadingMsg.style.display = 'none';
+    }
 
-            query = query.toLowerCase();
-            let results = [];
+    // زر الالتقاط والتجميد
+    captureBtn.onclick = async () => {
+        // 1. تثبيت الصورة
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0);
+        
+        video.style.display = 'none';
+        canvas.style.display = 'block';
+        captureBtn.style.display = 'none';
+        btnRetake.style.display = 'block';
+        loadingMsg.style.display = 'block';
+        statusHint.innerText = "جاري معالجة الكلمات...";
 
-            // أولاً: ابحث عن الدواء الأصلي
-            selectedDrug = drugData.find(d => d.name.toLowerCase().includes(query) || d.material.toLowerCase().includes(query));
+        // 2. تحليل الكلمات بالذكاء الاصطناعي
+        const { data } = await Tesseract.recognize(canvas, 'eng');
+        loadingMsg.style.display = 'none';
+        statusHint.innerText = "اضغط على الكلمة الصحيحة للبحث";
 
-            if (!selectedDrug) {
-                resultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لم يتم العثور على نتائج. تأكد من تهجئة الاسم.</td></tr>';
-                return;
-            }
+        // 3. رسم المربعات فوق الكلمات
+        renderHighlights(data.words);
+    };
 
-            // ثانياً: بناءً على الفلتر، حدد النتائج
-            if (filterType === 'all') {
-                results = [selectedDrug];
-            } else if (filterType === 'badil') {
-                // بديل: نفس المادة الفعالة
-                results = drugData.filter(d => d.material === selectedDrug.material);
-            } else if (filterType === 'masil') {
-                // مثيل: (محتاجة داتا أقوى) - حالياً هنطلع نفس المادة لتبسيط المثال
-                results = drugData.filter(d => d.material === selectedDrug.material && d.id !== selectedDrug.id);
-            }
+    function renderHighlights(words) {
+        overlayLayer.innerHTML = '';
+        
+        // حساب فروق الحجم بين الصورة الحقيقية وعرض الشاشة
+        const scaleX = canvas.clientWidth / canvas.width;
+        const scaleY = canvas.clientHeight / canvas.height;
 
-            displayResults(results);
-        };
+        words.forEach(word => {
+            if (word.text.length < 3) return; // تخطي الرموز الصغيرة
 
-        const displayResults = (results) => {
-            resultsBody.innerHTML = '';
+            const box = word.bbox;
+            const div = document.createElement('div');
+            div.className = 'word-highlight';
             
-            if (results.length === 0) {
-                resultsBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لا توجد نتائج لهذا الفلتر.</td></tr>';
-                return;
-            }
+            // تحديد مكان المربع بدقة
+            div.style.left = (box.x0 * scaleX) + 'px';
+            div.style.top = (box.y0 * scaleY) + 'px';
+            div.style.width = ((box.x1 - box.x0) * scaleX) + 'px';
+            div.style.height = ((box.y1 - box.y0) * scaleY) + 'px';
 
-            results.forEach(drug => {
-                let strengthDisplay = drug.strength;
-                
-                // إضافة الأسهم للبدائل (أعلى/أقل تركيز)
-                if (selectedDrug && drug.material === selectedDrug.material && drug.id !== selectedDrug.id) {
-                    if (drug.strength > selectedDrug.strength) {
-                        strengthDisplay += ' <span class="trend-icon up">&#9650;</span>'; // سهم لفوق
-                    } else if (drug.strength < selectedDrug.strength) {
-                        strengthDisplay += ' <span class="trend-icon down">&#9660;</span>'; // سهم لتحت
-                    }
-                }
+            // عند الضغط على الكلمة المظللة
+            div.onclick = () => {
+                const cleanWord = word.text.replace(/[^a-zA-Z0-9]/g, '');
+                mainSearch.value = cleanWord;
+                closeCamera();
+                runSearch(cleanWord);
+            };
 
-                const row = `
-                    <tr>
-                        <td>${drug.name}</td>
-                        <td>${strengthDisplay}</td>
-                        <td>${drug.price} EGP</td>
-                        <td>${drug.company}</td>
-                    </tr>
-                `;
-                resultsBody.innerHTML += row;
-            });
-        };
+            overlayLayer.appendChild(div);
+        });
+    }
 
-    </script>
+    btnRetake.onclick = resetUI;
+
+    function closeCamera() {
+        if (stream) stream.getTracks().forEach(t => t.stop());
+        cameraOverlay.style.display = 'none';
+    }
+
+    btnCloseOverlay.onclick = closeCamera;
+
+    function runSearch(query) {
+        const tableBody = document.getElementById('table-body');
+        const filtered = drugs.filter(d => d.name.toLowerCase().includes(query.toLowerCase()));
+        
+        tableBody.innerHTML = '';
+        if (filtered.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">لم نجد صنف بهذا الاسم</td></tr>';
+            return;
+        }
+        filtered.forEach(d => {
+            tableBody.innerHTML += `<tr><td><b>${d.name}</b></td><td>${d.strength}</td><td>${d.price}</td><td>${d.company}</td></tr>`;
+        });
+    }
+</script>
 </body>
 </html>
