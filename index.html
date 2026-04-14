@@ -33,21 +33,23 @@
         }
 
         /* اللوجو - جزء الـ S (بعد إزالة الإطار الخارجي) */
-.logo-s-container {
-    width: 80px;
-    height: 80px;
-    /* تمت إزالة الإطار الخارجي (border) ليبقى اللوجو النيون فقط */
+/* الحاوية اللي هتحبس اللوجو في مربع صغير */
+.logo-container {
+    width: 80px;        /* نفس عرض المربع اللي في الكارت */
+    height: 80px;       /* نفس ارتفاع المربع */
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
+    overflow: hidden;   /* عشان لو الصورة أكبر من المربع تتقص ومتخرجش براه */
 }
-        }
-        
-        .logo-s-img {
-            max-width: 60px;
-            /* استبدل 'logo-s.png' باسم ملف اللوجو الفعلي */
-            /* يمكنك رفع الملف ووضع اسمه هنا */
+
+/* ضبط الصورة جوه المربع */
+.logo-img {
+    width: 100%;        /* خلي الصورة تملا المربع الصغير بس */
+    height: 100%;
+    object-fit: contain; /* يحافظ على أبعاد اللوجو جوه المربع بدون مط */
+}
         }
 
         /* اسم التطبيق JUST SCAN */
