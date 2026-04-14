@@ -26,30 +26,29 @@
             max-width: 800px;
             background-color: #0d1117; /* نفس لون الخلفية */
             padding: 40px;
+            box-shadow: 0 0 20px rgba(61, 96, 204, 0.5); /* تأثير نيون خفيف */
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
         }
 
-        /* اللوجو - جزء الـ S (بعد إزالة الإطار الخارجي) */
-/* الحاوية اللي هتحبس اللوجو في مربع صغير */
-.logo-container {
-    width: 80px;        /* نفس عرض المربع اللي في الكارت */
-    height: 80px;       /* نفس ارتفاع المربع */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
-    overflow: hidden;   /* عشان لو الصورة أكبر من المربع تتقص ومتخرجش براه */
-}
-
-/* ضبط الصورة جوه المربع */
-.logo-img {
-    width: 100%;        /* خلي الصورة تملا المربع الصغير بس */
-    height: 100%;
-    object-fit: contain; /* يحافظ على أبعاد اللوجو جوه المربع بدون مط */
-}
+        /* اللوجو - جزء الـ S */
+        .logo-s-container {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(61, 96, 204, 0.5); /* إطار شفاف للوجو */
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo-s-img {
+            max-width: 60px;
+            /* استبدل 'logo-s.png' باسم ملف اللوجو الفعلي */
+            /* يمكنك رفع الملف ووضع اسمه هنا */
         }
 
         /* اسم التطبيق JUST SCAN */
