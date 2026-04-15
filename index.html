@@ -123,47 +123,54 @@
             font-weight: bold;
             text-shadow: 0 0 5px rgba(61, 96, 204, 0.8);
         }
-     @media screen and (max-width: 600px) {
-    /* 1. الفريم يطول وياخد شكل الموبايل */
+    @media screen and (max-width: 600px) {
+    /* الفريم يطول ويملأ الشاشة */
     .main-card-frame {
-        width: 90% !important;
-        height: 92vh !important;
+        width: 85% !important;
+        height: 85vh !important;
         display: flex !important;
         flex-direction: column !important;
+        justify-content: flex-start !important; /* يبدأ من فوق */
         align-items: center !important;
-        padding: 20px 10px !important;
+        padding: 30px 15px !important;
     }
 
-    /* 2. اللوجو والاسم يفضلوا فوق */
+    /* قسم النص واللوجو يفضلوا ثابتين فوق */
     .logo-container, .app-name, .app-description {
-        margin-bottom: 15px !important;
+        margin-bottom: 10px !important;
+        flex-shrink: 0 !important;
     }
 
-    /* 3. ترتيب الزراير: واحد فوق وواحد تحت في نص الشاشة */
+    /* حاوية الأزرار: هخليها تاخد المساحة اللي في النص */
     .bottom-section {
-        flex-direction: column !important;
-        justify-content: center !important; /* يخليهم في النص بعيد عن اللوجو */
-        gap: 20px !important;
+        display: flex !important;
+        flex-direction: column !important; /* يخلي المجموعات فوق بعض */
+        justify-content: center !important; /* يوسطنهم في المساحة الفاضية */
+        align-items: center !important;
         width: 100% !important;
-        flex-grow: 1 !important; /* بياخد المساحة الفاضية */
+        flex-grow: 1 !important; 
+        gap: 25px !important; /* مسافة بين المجموعة الأولى والثانية */
     }
 
-    /* 4. الزرار والباركود بتاعه جنب بعض في سطر واحد */
+    /* كل باركود وجنبه الزرار بتاعه في سطر واحد */
     .action-group {
-        flex-direction: row !important; 
+        display: flex !important;
+        flex-direction: row-reverse !important; /* الباركود والزرار جنب بعض */
         justify-content: center !important;
         align-items: center !important;
         width: 100% !important;
-        gap: 10px !important;
+        gap: 15px !important;
     }
 
-    /* 5. الرقم تحت خالص في قاع الفريم */
+    /* الرقم: إجباري ينزل في قاع الفريم */
     .phone-number {
-        margin-top: auto !important; /* بيزقه لآخر الفريم من تحت */
-        padding-bottom: 20px !important;
-        font-size: 20px !important;
+        margin-top: auto !important; 
+        padding-top: 10px !important;
+        font-size: 22px !important;
         text-align: center !important;
         width: 100% !important;
+        color: #3d60cc !important;
+        display: block !important;
     }
 }
     </style>
