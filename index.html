@@ -124,35 +124,46 @@
             text-shadow: 0 0 5px rgba(61, 96, 204, 0.8);
         }
      @media screen and (max-width: 600px) {
-    /* 1. يخلي الفريم يطول في الموبايل */
+    /* 1. الفريم يطول وياخد شكل الموبايل */
     .main-card-frame {
-        width: 95% !important;
-        height: 90vh !important; 
-        justify-content: flex-start; /* يبدأ الرص من فوق */
+        width: 90% !important;
+        height: 92vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
         padding: 20px 10px !important;
     }
 
-    /* 2. يخلي القسم السفلي ياخد باقي المساحة بالطول */
+    /* 2. اللوجو والاسم يفضلوا فوق */
+    .logo-container, .app-name, .app-description {
+        margin-bottom: 15px !important;
+    }
+
+    /* 3. ترتيب الزراير: واحد فوق وواحد تحت في نص الشاشة */
     .bottom-section {
         flex-direction: column !important;
-        flex-grow: 1; 
-        justify-content: space-evenly; /* يوزع المجموعات بانتظام */
-        width: 100%;
+        justify-content: center !important; /* يخليهم في النص بعيد عن اللوجو */
+        gap: 20px !important;
+        width: 100% !important;
+        flex-grow: 1 !important; /* بياخد المساحة الفاضية */
     }
 
-    /* 3. يخلي الزرار والباركود "جنب بعض" في الموبايل */
+    /* 4. الزرار والباركود بتاعه جنب بعض في سطر واحد */
     .action-group {
         flex-direction: row !important; 
-        justify-content: center;
-        gap: 15px;
-        width: 100%;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 10px !important;
     }
 
-    /* 4. يرمي الرقم في قاع الفريم */
+    /* 5. الرقم تحت خالص في قاع الفريم */
     .phone-number {
-        margin-top: auto;
-        padding-bottom: 20px;
-        order: 10; 
+        margin-top: auto !important; /* بيزقه لآخر الفريم من تحت */
+        padding-bottom: 20px !important;
+        font-size: 20px !important;
+        text-align: center !important;
+        width: 100% !important;
     }
 }
     </style>
