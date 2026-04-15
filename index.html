@@ -123,54 +123,43 @@
             font-weight: bold;
             text-shadow: 0 0 5px rgba(61, 96, 204, 0.8);
         }
-    @media screen and (max-width: 600px) {
-    /* الفريم يطول ويملأ الشاشة */
+    /* --- تنسيق الموبايل فقط (أصغر من 600px) --- */
+@media screen and (max-width: 600px) {
+    /* الفريم يطول ويبقى عمودي */
     .main-card-frame {
-        width: 85% !important;
-        height: 85vh !important;
-        display: flex !important;
+        width: 88% !important;
+        height: 85vh !important; /* طول الفريم في الموبايل */
         flex-direction: column !important;
-        justify-content: flex-start !important; /* يبدأ من فوق */
-        align-items: center !important;
+        justify-content: flex-start !important;
         padding: 30px 15px !important;
+        margin: auto;
     }
 
-    /* قسم النص واللوجو يفضلوا ثابتين فوق */
-    .logo-container, .app-name, .app-description {
-        margin-bottom: 10px !important;
-        flex-shrink: 0 !important;
-    }
-
-    /* حاوية الأزرار: هخليها تاخد المساحة اللي في النص */
+    /* منطقة الزراير والباركود في الموبايل */
     .bottom-section {
-        display: flex !important;
-        flex-direction: column !important; /* يخلي المجموعات فوق بعض */
-        justify-content: center !important; /* يوسطنهم في المساحة الفاضية */
-        align-items: center !important;
+        flex-direction: column !important; /* خليهم فوق بعض (مجموعتين) */
+        flex-grow: 1 !important;
+        justify-content: center !important; /* يوسطنهم بعيد عن اللوجو */
+        gap: 35px !important; /* مسافة بين المجموعتين */
         width: 100% !important;
-        flex-grow: 1 !important; 
-        gap: 25px !important; /* مسافة بين المجموعة الأولى والثانية */
     }
 
-    /* كل باركود وجنبه الزرار بتاعه في سطر واحد */
+    /* كل باركود وجنبه الزرار بتاعه */
     .action-group {
-        display: flex !important;
-        flex-direction: row-reverse !important; /* الباركود والزرار جنب بعض */
+        flex-direction: row-reverse !important; /* باركود وزرار "جنب بعض" */
         justify-content: center !important;
         align-items: center !important;
         width: 100% !important;
         gap: 15px !important;
     }
 
-    /* الرقم: إجباري ينزل في قاع الفريم */
+    /* الرقم يترمي في القاع */
     .phone-number {
-        margin-top: auto !important; 
-        padding-top: 10px !important;
-        font-size: 22px !important;
+        margin-top: auto !important;
+        order: 10;
         text-align: center !important;
         width: 100% !important;
-        color: #3d60cc !important;
-        display: block !important;
+        padding-bottom: 10px;
     }
 }
     </style>
