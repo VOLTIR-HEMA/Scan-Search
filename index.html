@@ -2,200 +2,159 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Just Scan - تطبيق السكانر المتكامل</title>
+    <title>Just Scan Poster Design</title>
     <style>
-        /* إعدادات الخلفية الكلية (نفس اللون الغامق خلف الكارت) */
+        :root {
+            --main-blue: #3b82f6;
+            --dark-bg: #0a0a0a;
+            --neon-glow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #0d1117; /* لون الخلفية الغامق جداً */
+            background-color: #222;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
         }
 
-        /* الإطار الخارجي (الإطار الأزرق النيون) */
-        .main-card-frame {
-            border: 2px solid #3d60cc; /* لون الإطار النيون */
+        /* حاوية البوستر - يمكنك أخذ سكرين شوت عالية الجودة لها */
+        .poster-container {
+            width: 500px;
+            height: 800px;
+            background-color: var(--dark-bg);
+            border: 2px solid var(--main-blue);
             border-radius: 20px;
-            width: 90%;
-            max-width: 800px;
-            background-color: #0d1117; /* نفس لون الخلفية */
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(61, 96, 204, 0.5); /* تأثير نيون خفيف */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             position: relative;
+            overflow: hidden;
+            color: white;
+            padding: 30px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* اللوجو - جزء الـ S */
-        .logo-s-container {
-            width: 80px;
-            height: 80px;
-            border: 2px solid rgba(61, 96, 204, 0.5); /* إطار شفاف للوجو */
+        .header { text-align: center; margin-bottom: 20px; }
+        
+        .logo { width: 80px; filter: drop-shadow(var(--neon-glow)); }
+        
+        .app-name { 
+            font-size: 28px; 
+            color: var(--main-blue); 
+            font-weight: bold; 
+            letter-spacing: 2px;
+            margin-top: 10px;
+        }
+
+        .headline {
+            font-size: 22px;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.5;
+        }
+
+        /* واجهة التطبيق داخل موبايل */
+        .phone-mockup {
+            width: 200px;
+            height: 400px;
+            border: 8px solid #333;
+            border-radius: 30px;
+            margin: 0 auto;
+            background-image: url('app_ui.png'); /* ضع اسم صورة الواجهة هنا */
+            background-size: cover;
+            box-shadow: var(--neon-glow);
+        }
+
+        .pricing {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .price-card {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--main-blue);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        .old-price { text-decoration: line-through; color: #ff4444; font-size: 14px; }
+        
+        .new-price { font-size: 24px; font-weight: bold; color: #4ade80; }
+
+        /* منطقة الباركود */
+        .footer {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .qr-placeholder {
+            width: 100px;
+            height: 100px;
+            background: white;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .logo-s-img {
-            max-width: 60px;
-            /* استبدل 'logo-s.png' باسم ملف اللوجو الفعلي */
-            /* يمكنك رفع الملف ووضع اسمه هنا */
+            cursor: pointer;
         }
 
-        /* اسم التطبيق JUST SCAN */
-        .app-name {
-            color: #3d60cc;
-            font-size: 32px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px rgba(61, 96, 204, 0.8);
-        }
+        .qr-placeholder img { width: 90%; }
 
-        /* النص العربي في المنتصف */
-        .app-description {
-            color: #d1d5db; /* أبيض رمادي */
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 40px;
-            width: 80%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* الجزء السفلي (الأزرار والبار كودات والرقم) */
-        .controls-and-info {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: auto;
-        }
-
-        /* ستايل للأزرار والبار كودات */
-        .action-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .action-btn {
-            background-color: transparent;
-            border: 2px solid #3d60cc;
-            color: #3d60cc;
+        .download-btn {
+            background: var(--main-blue);
+            color: white;
             padding: 10px 20px;
-            border-radius: 8px;
+            border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
-            transition: all 0.3s;
+            transition: 0.3s;
         }
 
-        .action-btn:hover {
-            background-color: #3d60cc;
-            color: #0d1117;
-        }
-
-        .barcode-img {
-            width: 100px;
-            height: 100px;
-            border: 1px solid rgba(61, 96, 204, 0.5);
-            border-radius: 5px;
-            background-color: black; /* لجعل الباركود واضحاً */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* رقم التليفون (نفس المكان والشكل) */
-        .phone-number {
-            color: #3d60cc;
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 0 5px rgba(61, 96, 204, 0.8);
-        }
-    /* --- تنسيق الموبايل فقط (أصغر من 600px) --- */
-@media screen and (max-width: 600px) {
-    /* الفريم يطول ويبقى عمودي */
-    .main-card-frame {
-        width: 88% !important;
-        height: 85vh !important; /* طول الفريم في الموبايل */
-        flex-direction: column !important;
-        justify-content: flex-start !important;
-        padding: 30px 15px !important;
-        margin: auto;
-    }
-
-    /* منطقة الزراير والباركود في الموبايل */
-    .bottom-section {
-        flex-direction: column !important; /* خليهم فوق بعض (مجموعتين) */
-        flex-grow: 1 !important;
-        justify-content: center !important; /* يوسطنهم بعيد عن اللوجو */
-        gap: 35px !important; /* مسافة بين المجموعتين */
-        width: 100% !important;
-    }
-
-    /* كل باركود وجنبه الزرار بتاعه */
-    .action-group {
-        flex-direction: row-reverse !important; /* باركود وزرار "جنب بعض" */
-        justify-content: center !important;
-        align-items: center !important;
-        width: 100% !important;
-        gap: 15px !important;
-    }
-
-    /* الرقم يترمي في القاع */
-    .phone-number {
-        margin-top: auto !important;
-        order: 10;
-        text-align: center !important;
-        width: 100% !important;
-        padding-bottom: 10px;
-    }
-}
+        .download-btn:hover { transform: scale(1.05); background: #2563eb; }
     </style>
 </head>
 <body>
 
-<div class="main-card-frame">
-    <div class="logo-s-container">
-    <img src="logo.jpg" alt="Just Scan Logo" class="logo-s-img">
-</div>
+    <div class="poster-container">
+        <div class="header">
+            <img src="logo.png" alt="Logo" class="logo">
+            <div class="app-name">JUST SCAN</div>
+        </div>
 
-    <div class="app-name">JUST SCAN</div>
+        <div class="headline">
+            وفر وقتك، وفر فلوسك..<br>
+            <b>بديل السكانر المتكامل!</b>
+        </div>
 
-    <div class="app-description">
-        وفر وقتك، وفر فلوسك
-        بديل السكانر المتكامل
-    </div>
+        <div class="phone-mockup"></div>
 
-    <div class="controls-and-info">
-        <div class="action-group">
-            <a href="https://drive.google.com/drive/folders/1BnAK_WdgXfCx2YYbcwb_77YKXInSlau9?usp=sharing" class="btn action-btn">رابط التحميل (الموبايل)</a>
-            <div class="barcode-img">
-                <img src="phone.png" alt="QR Mobile" style="max-width: 90px;">
+        <div class="pricing">
+            <div class="price-card">
+                الاشتراك الشهري: 45 ج.م
+            </div>
+            <div class="price-card" style="border-width: 2px;">
+                <span style="color: gold;">العرض السنوي الأكبر</span><br>
+                <span class="old-price">540 ج.م</span> 
+                <span class="new-price">400 ج.م</span>
             </div>
         </div>
 
-        <div class="action-group">
-            <a href="https://drive.google.com/drive/folders/1ZbQZI34nQqP5x9OmkR6Xmx5By5RSqeon?usp=drive_link" class="btn action-btn">رابط التحميل (الكمبيوتر)</a>
-            <div class="barcode-img">
-                <img src="windows.png" alt="QR PC" style="max-width: 90px;">
+        <div class="footer">
+            <div class="qr-section">
+                <p style="font-size: 12px; margin-bottom: 5px;">امسح للتحميل</p>
+                <a href="https://drive.google.com/drive/folders/1-86kpUVIE84WWXuRzJV-CAzo-6EPecGz?usp=drive_link" class="qr-placeholder">
+                    <img src="qr_code.png" alt="QR Code">
+                </a>
             </div>
+            <a href="https://drive.google.com/drive/folders/1-86kpUVIE84WWXuRzJV-CAzo-6EPecGz?usp=drive_link" class="download-btn">حمل التطبيق الآن</a>
         </div>
-
-        <div class="phone-number">01147534998</div>
     </div>
-</div>
 
 </body>
 </html>
