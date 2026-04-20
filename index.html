@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Just Scan Poster Design</title>
     <style>
         :root {
@@ -14,28 +15,31 @@
             background-color: #222;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            align-items: flex-start; /* التغيير هنا عشان يبدأ من فوق ويسمح بالنزول */
+            min-height: 100vh;
             margin: 0;
+            padding: 20px 0; /* مسافة عشان البوستر ميبقاش لازق في حواف الشاشة */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-y: auto; /* السماح بالسكول لو المحتوى كبير */
         }
 
-        /* حاوية البوستر - يمكنك أخذ سكرين شوت عالية الجودة لها */
         .poster-container {
-            width: 500px;
-            height: 800px;
+            width: 90%; /* عرض مرن للموبايل */
+            max-width: 450px; /* أقصى عرض عشان ميبقاش ضخم على الكمبيوتر */
             background-color: var(--dark-bg);
             border: 2px solid var(--main-blue);
             border-radius: 20px;
             position: relative;
-            overflow: hidden;
             color: white;
             padding: 30px;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: auto; /* خليته يطول تلقائي على حسب الحاجة */
         }
 
         .header { text-align: center; margin-bottom: 20px; }
-        
         .logo { width: 80px; filter: drop-shadow(var(--neon-glow)); }
         
         .app-name { 
@@ -47,27 +51,29 @@
         }
 
         .headline {
-            font-size: 22px;
+            font-size: 20px;
             text-align: center;
-            margin: 20px 0;
+            margin: 15px 0;
             line-height: 1.5;
         }
 
-        /* واجهة التطبيق داخل موبايل */
         .phone-mockup {
-            width: 200px;
-            height: 400px;
+            width: 100%;
+            max-width: 220px;
+            aspect-ratio: 9/18.5; /* يحافظ على أبعاد الموبايل مهما كان العرض */
             border: 8px solid #333;
             border-radius: 30px;
             margin: 0 auto;
-            background-image: url('app_ui.png'); /* ضع اسم صورة الواجهة هنا */
+            background-image: url('app_ui.png');
             background-size: cover;
+            background-position: center;
             box-shadow: var(--neon-glow);
         }
 
         .pricing {
-            margin-top: 30px;
+            margin-top: 25px;
             text-align: center;
+            width: 100%;
         }
 
         .price-card {
@@ -79,44 +85,53 @@
         }
 
         .old-price { text-decoration: line-through; color: #ff4444; font-size: 14px; }
-        
         .new-price { font-size: 24px; font-weight: bold; color: #4ade80; }
 
-        /* منطقة الباركود */
+        /* تعديل منطقة الفوتر لتناسب الموبايل */
         .footer {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            right: 30px;
+            margin-top: 20px;
+            width: 100%;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
+            flex-direction: column; /* فوق بعض في الموبايل عشان الزحمة */
+            align-items: center;
+            gap: 15px;
         }
 
         .qr-placeholder {
-            width: 100px;
-            height: 100px;
+            width: 110px;
+            height: 110px;
             background: white;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
+            padding: 5px;
         }
 
-        .qr-placeholder img { width: 90%; }
+        .qr-placeholder img { width: 100%; height: 100%; }
 
         .download-btn {
             background: var(--main-blue);
             color: white;
-            padding: 10px 20px;
+            padding: 12px 25px;
             border-radius: 50px;
             text-decoration: none;
             font-weight: bold;
             transition: 0.3s;
+            text-align: center;
         }
 
         .download-btn:hover { transform: scale(1.05); background: #2563eb; }
+
+        /* لو الشاشة واسعة (كمبيوتر) خلي الباركود والزرار جنب بعض */
+        @media (min-width: 400px) {
+            .footer {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-end;
+            }
+        }
     </style>
 </head>
 <body>
@@ -136,25 +151,3 @@
 
         <div class="pricing">
             <div class="price-card">
-                الاشتراك الشهري: 45 ج.م
-            </div>
-            <div class="price-card" style="border-width: 2px;">
-                <span style="color: gold;">العرض السنوي الأكبر</span><br>
-                <span class="old-price">540 ج.م</span> 
-                <span class="new-price">400 ج.م</span>
-            </div>
-        </div>
-
-        <div class="footer">
-            <div class="qr-section">
-                <p style="font-size: 12px; margin-bottom: 5px;">امسح للتحميل</p>
-                <a href="https://drive.google.com/drive/folders/1-86kpUVIE84WWXuRzJV-CAzo-6EPecGz?usp=drive_link" class="qr-placeholder">
-                    <img src="qr_code.png" alt="QR Code">
-                </a>
-            </div>
-            <a href="https://drive.google.com/drive/folders/1-86kpUVIE84WWXuRzJV-CAzo-6EPecGz?usp=drive_link" class="download-btn">حمل التطبيق الآن</a>
-        </div>
-    </div>
-
-</body>
-</html>
