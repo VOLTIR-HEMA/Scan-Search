@@ -10,6 +10,7 @@
             --dark-bg: #0a0a0a;
             --neon-glow: 0 0 15px rgba(59, 130, 246, 0.5);
             --gold-glow: 0 0 15px rgba(234, 179, 8, 0.4);
+            --green-glow: 0 0 15px rgba(74, 222, 128, 0.4);
         }
 
         body {
@@ -45,7 +46,7 @@
 
         .phone-mockup {
             width: 200px;
-            height: 350px;
+            height: 300px;
             border: 8px solid #333;
             border-radius: 30px;
             margin: 0 auto;
@@ -56,45 +57,147 @@
 
         .pricing { margin-top: 30px; text-align: center; }
         
-        /* كروت الباقات العادية */
+        /* كروت الباقات العادية وتأثيراتها */
         .price-card { 
             background: rgba(59, 130, 246, 0.08); 
-            border: 1px solid rgba(59, 130, 246, 0.4); 
+            border: 1px solid rgba(59, 130, 246, 0.3); 
             border-radius: 12px; 
             padding: 15px; 
             margin-bottom: 12px; 
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            width: 100%;
         }
         
         .plan-title { font-size: 18px; font-weight: 500; }
         .plan-cost { font-size: 20px; font-weight: bold; color: #e0e0e0; }
 
+        /* حالة التحديد والـ Hover للكروت العادية */
+        .price-card:hover {
+            border-color: var(--main-blue);
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .price-card.selected {
+            border-color: #4ade80 !important;
+            box-shadow: var(--green-glow);
+            background: rgba(74, 222, 128, 0.05);
+        }
+
         /* كارت الباقة السنوية المميز */
         .price-card.featured {
             background: rgba(234, 179, 8, 0.05);
-            border: 2px solid #eab308;
+            border: 1px solid rgba(234, 179, 8, 0.4);
+        }
+        .price-card.featured:hover {
+            border-color: #eab308;
+            background: rgba(234, 179, 8, 0.1);
+        }
+        .price-card.featured.selected {
+            border-color: #eab308 !important;
             box-shadow: var(--gold-glow);
-            position: relative;
-            padding: 18px 15px;
+            background: rgba(234, 179, 8, 0.08);
         }
         
         .badge {
             position: absolute;
-            top: -12px;
+            top: 0;
             left: 20px;
             background: #eab308;
             color: black;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            padding: 2px 10px;
-            border-radius: 20px;
+            padding: 1px 8px;
+            border-radius: 0 0 8px 8px;
         }
 
         .old-price { text-decoration: line-through; color: #ff4444; font-size: 15px; margin-left: 8px; }
-        .new-price { font-size: 26px; font-weight: bold; color: #4ade80; }
+        .new-price { font-size: 24px; font-weight: bold; color: #4ade80; }
 
+        /* زرار الاشتراك المخفي اللي بيظهر جوا الكارت المتحدد */
+        .card-btn {
+            display: none;
+            width: 100%;
+            background: #4ade80;
+            color: black;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 12px;
+            cursor: pointer;
+            animation: slideDown 0.2s ease;
+        }
+        .price-card.featured .card-btn {
+            background: #eab308;
+        }
+        .price-card.selected .card-btn {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تصميم النافذة المنبثقة الاحترافية (Modal) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: #111;
+            border: 2px solid var(--main-blue);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: var(--neon-glow);
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+        .modal-box h3 { margin-top: 0; color: var(--main-blue); font-size: 22px; }
+        .modal-box p { color: #ccc; font-size: 16px; line-height: 1.6; margin: 15px 0 25px; }
+        .modal-buttons { display: flex; gap: 10px; justify-content: center; }
+        
+        .modal-btn {
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .modal-btn.confirm { background: #4ade80; color: black; }
+        .modal-btn.confirm:hover { box-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+        .modal-btn.cancel { background: #333; color: white; }
+        .modal-btn.cancel:hover { background: #444; }
+
+        /* الفوتر الأصلي للبوستر */
         .footer {
             margin-top: 30px;
             display: flex;
@@ -102,36 +205,19 @@
             align-items: flex-end;
             padding-bottom: 10px;
         }
-
         .qr-placeholder {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100px; height: 100px; background: white; border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
         }
         .qr-placeholder img { width: 90%; }
-
         .download-btn {
-            background: var(--main-blue);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: var(--neon-glow);
-            transition: 0.3s;
-        }
-        
-        .download-btn:hover {
-            background: #2563eb;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
+            background: var(--main-blue); color: white; padding: 12px 24px; border-radius: 50px;
+            text-decoration: none; font-weight: bold; box-shadow: var(--neon-glow);
         }
     </style>
 </head>
 <body>
+
     <div class="poster-container">
         <div class="header">
             <img src="logo.png" alt="Logo" class="logo">
@@ -142,23 +228,32 @@
         <div class="phone-mockup"></div>
         
         <div class="pricing">
-            <div class="price-card">
-                <span class="plan-title">باقة الـ 3 شهور</span>
-                <span class="plan-cost">180 ج.م</span>
-            </div>
-            
-            <div class="price-card">
-                <span class="plan-title">باقة الـ 6 شهور</span>
-                <span class="plan-cost">300 ج.م</span>
-            </div>
-            
-            <div class="price-card featured">
-                <div class="badge">العرض الأقوى (وفر أكتر من 30%)</div>
-                <span class="plan-title" style="color: #eab308; font-weight: bold;">العرض السنوي (12 شهر)</span>
-                <div>
-                    <span class="old-price">720 ج.م</span> 
-                    <span class="new-price">500 ج.م</span>
+            <div class="price-card" onclick="selectPlan(this, '3 شهور')">
+                <div class="card-content">
+                    <span class="plan-title">باقة الـ 3 شهور</span>
+                    <span class="plan-cost">180 ج.م</span>
                 </div>
+                <button class="card-btn" onclick="openModal(event, '3 شهور')">اشترك الآن</button>
+            </div>
+            
+            <div class="price-card" onclick="selectPlan(this, '6 شهور')">
+                <div class="card-content">
+                    <span class="plan-title">باقة الـ 6 شهور</span>
+                    <span class="plan-cost">300 ج.م</span>
+                </div>
+                <button class="card-btn" onclick="openModal(event, '6 شهور')">اشترك الآن</button>
+            </div>
+            
+            <div class="price-card featured" onclick="selectPlan(this, 'السنة')">
+                <div class="badge">العرض الأقوى (وفر أكتر من 30%)</div>
+                <div class="card-content" style="margin-top: 8px;">
+                    <span class="plan-title" style="color: #eab308; font-weight: bold;">العرض السنوي (12 شهر)</span>
+                    <div>
+                        <span class="old-price">720 ج.م</span> 
+                        <span class="new-price">500 ج.م</span>
+                    </div>
+                </div>
+                <button class="card-btn" onclick="openModal(event, 'السنة')">اشترك الآن</button>
             </div>
         </div>
         
@@ -170,5 +265,62 @@
             <a href="https://drive.google.com/drive/folders/1-86kpUVIE84WWXuRzJV-CAzo-6EPecGz?usp=drive_link" class="download-btn">حمل التطبيق الآن</a>
         </div>
     </div>
+
+    <div class="modal-overlay" id="customModal">
+        <div class="modal-box">
+            <h3>تأكيد الاشتراك 🚀</h3>
+            <p id="modalText">هل أنت متأكد من رغبتك في الاشتراك بـ هذه الباقة؟ سيتم تحويلك مباشرة لتأكيد الطلب معنا عبر الواتساب.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="redirectToWhatsApp()">تأكيد واشتراك</button>
+                <button class="modal-btn cancel" onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedPlanName = "";
+        // حط رقم موبايلك هنا بالصيغة الدولية بدون علامة + (مثال: 2010xxxxxxxx)
+        const myWhatsAppNumber = "201000000000"; 
+
+        // دالة تحديد الكارت وإظهار الزرار جواه
+        function selectPlan(card, planName) {
+            // إزالة التحديد من جميع الكروت السابقة
+            document.querySelectorAll('.price-card').forEach(c => c.classList.remove('selected'));
+            // إضافة التحديد للكارت الحالي
+            card.classList.add('selected');
+            selectedPlanName = planName;
+        }
+
+        // دالة فتح النافذة المنبثقة ومنع انتشار الحدث للكارت
+        function openModal(event, planName) {
+            event.stopPropagation(); // عشان كليك الزرار ميضربش في الكارت تاني
+            selectedPlanName = planName;
+            
+            // تخصيص نص الرسالة داخل المودال بناءً على الباقة
+            document.getElementById('modalText').innerText = `لقد اخترت الاشتراك في [باقة ${planName}]. اضغط على تأكيد ليتم تحويلك إلى الواتساب وإرسال كود التفعيل فوراً.`;
+            
+            // إظهار المودال بالأنيميشن
+            document.getElementById('customModal').classList.add('active');
+        }
+
+        // دالة إغلاق النافذة
+        function closeModal() {
+            document.getElementById('customModal').classList.remove('active');
+        }
+
+        // دالة تحويل الزبون للواتساب بالرسالة المحقونة
+        function redirectToWhatsApp() {
+            // صياغة الرسالة الجاهزة مشفرة للينك الـ URL
+            const textMessage = `مرحباً إبراهيم، أريد الاشتراك في باقة الـ (${selectedPlanName}) لتطبيق Just Scan وسماع تفاصيل التفعيل.`;
+            const encodedMessage = encodeURIComponent(textMessage);
+            
+            // بناء رابط الواتساب النهائي
+            const whatsappUrl = `https://wa.me/${myWhatsAppNumber}?text=${encodedMessage}`;
+            
+            // تحويل الزبون في صفحة جديدة
+            window.open(whatsappUrl, '_blank');
+            closeModal();
+        }
+    </script>
 </body>
 </html>
